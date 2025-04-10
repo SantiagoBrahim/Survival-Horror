@@ -13,6 +13,7 @@ public class SC_Movimiento : MonoBehaviour
     [Header("Velocidad")]
     public float velocidadJugadorCaminando;
     public float velocidadJugadorCorriendo;
+    public float velocidadJugadorAgachado;
     private float velocidadJugador;
 
     // Salto
@@ -38,6 +39,16 @@ public class SC_Movimiento : MonoBehaviour
     // Movimiento
     private bool estaMoviendo;
 
+    // Agacharse
+    [Header("Agacharse")]
+    [SerializeField] private float alturaCamaraAgachado;
+    private float alturaCamaraNormal;
+    private bool agachado;
+
+    // Camara
+    [Header("Camara")]
+    [SerializeField] private GameObject camara;
+
     // UI
     [Header("UI")]
     [SerializeField] private GameObject HUD;
@@ -48,6 +59,7 @@ public class SC_Movimiento : MonoBehaviour
     [SerializeField] private Image barraStamina1;
     [SerializeField] private Image barraStamina2;
 
+
     private void Awake()
     {
         playerController = GetComponent<CharacterController>();
@@ -55,6 +67,7 @@ public class SC_Movimiento : MonoBehaviour
 
     private void Start()
     {
+        alturaCamaraNormal = camara.transform.localPosition.y;
         velocidadJugador = velocidadJugadorCaminando;
         staminaActual = staminaMax;
     }
@@ -76,7 +89,8 @@ public class SC_Movimiento : MonoBehaviour
         // Correr
         RunCheck();
 
- 
+        // Agacharse
+        CrouchCheck();
 
     }
 
@@ -132,7 +146,7 @@ public class SC_Movimiento : MonoBehaviour
             staminaActual = staminaMax;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift) && staminaActual > 0)
+        if (Input.GetKey(KeyCode.LeftShift) && staminaActual > 0 && !agachado)
         {
             velocidadJugador = velocidadJugadorCorriendo;
             if(estaMoviendo)
@@ -145,12 +159,10 @@ public class SC_Movimiento : MonoBehaviour
             velocidadJugador = velocidadJugadorCaminando;
         }
 
-        if (staminaActual < staminaMax && (!estaMoviendo || !Input.GetKey(KeyCode.LeftShift)))
+        if (staminaActual < staminaMax && (!estaMoviendo || !Input.GetKey(KeyCode.LeftShift) || agachado))
         {
             RecargarStamina(staminaRecargadaEnReposo * Time.deltaTime);
         }
-
-        Debug.Log(velocidadJugador);
     }
 
     private void QuitarStamina(float staminaQuitada)
@@ -183,4 +195,28 @@ public class SC_Movimiento : MonoBehaviour
             barraStaminaCompleta.SetActive(true);
         }
     }
+
+    private void CrouchCheck()
+    {
+        if(Input.GetKey(KeyCode.LeftControl))
+        {
+            agachado = true;
+            velocidadJugador = velocidadJugadorAgachado;
+            camara.transform.localPosition = new Vector3(camara.transform.localPosition.x, alturaCamaraAgachado, camara.transform.localPosition.z);
+        }
+        else if(Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            agachado = false;
+            camara.transform.localPosition = new Vector3(camara.transform.localPosition.x, alturaCamaraNormal, camara.transform.localPosition.z);
+            velocidadJugador = velocidadJugadorCaminando;
+        }
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(groundCheck.transform.position, radioGroundCheck);
+    }
+
 }
