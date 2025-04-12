@@ -125,8 +125,8 @@ public class SC_Movimiento : MonoBehaviour
 
 
         // Toma la dirección a la que el jugador quiere moverse
-        // transform.right indica la derecha del jugador como un vector de 3 direcciones (1,0,0)
-        // transform.forward indica el frente del jugador como un vector de 3 direcciones (0,0,1)
+        // transform.right indica la derecha del jugador como un vector de 3 direcciones
+        // transform.forward indica el frente del jugador como un vector de 3 direcciones
         Vector3 movimiento = transform.right * xAxis + transform.forward * zAxis;
 
         // Funcion para mover al jugador
