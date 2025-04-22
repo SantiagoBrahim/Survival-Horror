@@ -1,0 +1,134 @@
+using Unity.Mathematics;
+using UnityEngine;
+using UnityEngine.AI;
+using Unity.AI.Navigation;
+using Random = UnityEngine.Random;
+using System.Collections;
+using System;
+
+public class AIEnemy : AIStates
+{
+    // Velocidad
+    [Header("Velocidad")]
+    public float speed;
+
+    // Objetivo
+    [Header("Objetivo")]
+    public Transform target;
+
+    // NavMesh
+    [Header("NavMesh")]
+    [SerializeField] private NavMeshSurface navMesh;
+    [SerializeField] private float sampleRadius = 1f;
+    private Vector3 navMeshSize;
+    private Vector3 navMeshCenter;
+    private Vector3 navMeshHalfSize;
+    private Transform surfaceTransform;
+    private NavMeshAgent AI;
+
+    // IA
+    private bool moving;
+    private bool chasing;
+    private bool isStunned;
+    private bool isSeeking;
+
+    // Seeking
+    [Header("Seeking")]
+    public Vector3 seekPos;
+
+    private void Awake()
+    {
+        AI = GetComponent<NavMeshAgent>();
+    }
+
+    private void Start()
+    {
+        ChangeState(States.Idle);
+        AI.speed = speed;
+        navMeshSize = navMesh.size;
+        navMeshCenter = navMesh.center;
+        navMeshHalfSize = navMeshSize * 0.5f;
+        surfaceTransform = navMesh.transform;
+        moving = false;
+        chasing = false;
+        isStunned = false;
+        StartCoroutine(ChangeIdleWanderingState(3));
+    }
+
+    private void Update()
+    {
+        switch(actualState)
+        {
+            case States.Idle:
+                chasing = false;
+                isSeeking = false;
+                AI.isStopped = true;
+            break;
+            case States.Wandering:
+                chasing = false;
+                isSeeking = false;
+                AI.isStopped = false;
+                if (!moving)
+                {
+                    float randX = Random.Range(navMeshCenter.x - navMeshHalfSize.x, navMeshCenter.y + navMeshHalfSize.x);
+                    float randZ = Random.Range(navMeshCenter.z - navMeshHalfSize.z, navMeshCenter.z + navMeshHalfSize.z);
+                    Vector3 localPoint = new Vector3(randX, navMeshCenter.y, randZ);
+
+                    Vector3 worldPoint = surfaceTransform.TransformPoint(localPoint);
+
+                    if (NavMesh.SamplePosition(worldPoint, out NavMeshHit hit, sampleRadius, NavMesh.AllAreas))
+                    {
+                        AI.SetDestination(hit.position);
+                        moving = true;
+                        StopCoroutine("ChangeWanderingTargetPosition");
+                        StartCoroutine(ChangeWanderingTargetPosition(Random.Range(1, 4)));
+                        return;
+                    }
+                }
+            break;
+            case States.Seeking:
+                AI.isStopped = false;
+                chasing = false;
+                isSeeking = true;
+                AI.SetDestination(seekPos);
+                if(transform.position.x == seekPos.x && transform.position.z == seekPos.z)
+                {
+                    isSeeking = false;
+                    ChangeState(States.Wandering);
+                    seekPos = Vector3.zero;
+                }
+            break;
+            case States.Chasing:
+                AI.isStopped = false;
+                chasing = true;
+                isSeeking = false;
+                AI.SetDestination(target.position);
+            break;
+        }
+    }
+
+    IEnumerator ChangeIdleWanderingState(float timer)
+    {
+        yield return new WaitForSeconds(timer);
+        if(!chasing && !isStunned && !isSeeking)
+        {
+            int newState = Random.Range(1, 3);
+            if (newState == 1)
+            {
+                ChangeState(States.Idle);
+            }
+            else
+            {
+                ChangeState(States.Wandering);
+            }
+        }
+        Debug.Log(actualState);
+        StartCoroutine(ChangeIdleWanderingState(timer));
+    }
+
+    IEnumerator ChangeWanderingTargetPosition(float timer)
+    {
+        yield return new WaitForSeconds(timer);
+        moving = false;
+    }
+}
