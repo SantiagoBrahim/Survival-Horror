@@ -30,7 +30,13 @@ public class AIEnemy : AIStates
     private bool moving;
     private bool chasing;
     private bool isStunned;
-    private bool isSeeking;
+    public bool isSeeking;
+
+    //Wandering
+    [Header("Wandering")]
+    [SerializeField] private Transform frontLeftAreaTransform;
+    [SerializeField] private Transform backRightAreaTransform;
+
 
     // Seeking
     [Header("Seeking")]
@@ -70,8 +76,10 @@ public class AIEnemy : AIStates
                 AI.isStopped = false;
                 if (!moving)
                 {
-                    float randX = Random.Range(navMeshCenter.x - navMeshHalfSize.x, navMeshCenter.y + navMeshHalfSize.x);
-                    float randZ = Random.Range(navMeshCenter.z - navMeshHalfSize.z, navMeshCenter.z + navMeshHalfSize.z);
+                    //    float randX = Random.Range(navMeshCenter.x - navMeshHalfSize.x, navMeshCenter.x + navMeshHalfSize.x);
+                    //    float randZ = Random.Range(navMeshCenter.z - navMeshHalfSize.z, navMeshCenter.z + navMeshHalfSize.z);
+                    float randX = Random.Range(frontLeftAreaTransform.position.x, backRightAreaTransform.position.x);
+                    float randZ = Random.Range(frontLeftAreaTransform.position.z, backRightAreaTransform.position.z);
                     Vector3 localPoint = new Vector3(randX, navMeshCenter.y, randZ);
 
                     Vector3 worldPoint = surfaceTransform.TransformPoint(localPoint);
@@ -103,6 +111,14 @@ public class AIEnemy : AIStates
                 chasing = true;
                 isSeeking = false;
                 AI.SetDestination(target.position);
+            break;
+
+            case States.Stunned:
+                AI.isStopped = true;
+                chasing = false;
+                isSeeking = false;
+                moving = false;
+                isStunned = true;
             break;
         }
     }
