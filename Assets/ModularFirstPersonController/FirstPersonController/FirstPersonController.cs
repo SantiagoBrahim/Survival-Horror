@@ -412,6 +412,10 @@ public class FirstPersonController : MonoBehaviour
                         sprintBarCG.alpha += 5 * Time.deltaTime;
                     }
                 }
+                else
+                {
+                    isSprinting = false;
+                }
 
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
             }
