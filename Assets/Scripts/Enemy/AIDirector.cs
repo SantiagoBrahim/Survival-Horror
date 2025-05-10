@@ -39,7 +39,6 @@ public class AIDirector : MonoBehaviour
             if(distanceToPlayer < 10)
             {
                 EnemyAI.ChangeState(AIStates.States.Wandering);
-                EnemyAI.seekPos = Vector3.zero;
                 isMovingToPlayer = false;
             }
         }

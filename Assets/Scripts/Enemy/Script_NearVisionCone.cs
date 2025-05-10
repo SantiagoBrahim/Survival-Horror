@@ -29,9 +29,9 @@ public class Script_NearVisionCone : AIStates
 
     private void Update()
     {
-        if (distance != null && direccion != null)
+        if (direccion != null)
         {
-            Debug.DrawRay(RayCastSpawn.position, direccion * 100, Color.red);
+            Debug.DrawRay(RayCastSpawn.position, direccion * distance, Color.red);
         }
     }
 
