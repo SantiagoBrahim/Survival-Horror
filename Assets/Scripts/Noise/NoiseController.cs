@@ -6,6 +6,7 @@ public class NoiseController : MonoBehaviour
 {
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
+
     public void MakeNoise(float radiusNoise, AudioClip playedSound, Vector3 playPosition)
     {
         Collider[] collisions = Physics.OverlapSphere(playPosition, radiusNoise);

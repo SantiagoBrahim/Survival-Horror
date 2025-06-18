@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AIStates : MonoBehaviour
 {
-    public enum States {Idle, Wandering, Seeking, Chasing, Stunned, Fleeing};
+    public enum States {Idle, Wandering, Seeking, Chasing, Stunned, Fleeing, Attacking};
     public States actualState;
 
     private void Start()
