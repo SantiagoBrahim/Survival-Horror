@@ -489,6 +489,12 @@ public class FirstPersonController : MonoBehaviour
             walkSpeed /= speedReduction;
 
             isCrouched = false;
+
+            GameObject enemy = GameObject.Find("Enemy");
+            if (enemy != null)
+            {
+                enemy.GetComponent<AIEnemy>().incrementVision();
+            }
         }
         // Crouches player down to set height
         // Reduces walkSpeed
@@ -498,6 +504,12 @@ public class FirstPersonController : MonoBehaviour
             walkSpeed *= speedReduction;
 
             isCrouched = true;
+
+            GameObject enemy = GameObject.Find("Enemy");
+            if (enemy != null)
+            {
+                enemy.GetComponent<AIEnemy>().reduceVision();
+            }
         }
     }
 

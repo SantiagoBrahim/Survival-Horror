@@ -43,6 +43,13 @@ public class AIEnemy : AIStates
     [Header("Seeking")]
     public Vector3 seekPos;
 
+    // Vision Cone
+    [Header("Vision Cone")]
+    [SerializeField] GameObject farVisionCone;
+    [SerializeField] GameObject nearVisionCone;
+    [SerializeField] GameObject peripherealLeftVisionCone;
+    [SerializeField] GameObject peripherealRightVisionCone;
+
     private void Awake()
     {
         AI = GetComponent<NavMeshAgent>();
@@ -186,5 +193,25 @@ public class AIEnemy : AIStates
         yield return new WaitForSeconds(timeToEnd);
         ChangeState(States.Idle);
     }    
+
+    public void reduceVision()
+    {
+        farVisionCone.transform.localScale = new Vector3(farVisionCone.transform.localScale.x / 2, farVisionCone.transform.localScale.y, farVisionCone.transform.localScale.z);
+        nearVisionCone.transform.localScale = new Vector3(nearVisionCone.transform.localScale.x / 2, nearVisionCone.transform.localScale.y, nearVisionCone.transform.localScale.z);
+        peripherealLeftVisionCone.SetActive(false);
+        peripherealRightVisionCone.SetActive(false);
+        // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x / 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
+        // peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x / 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
+    }
+
+    public void incrementVision()
+    {
+        farVisionCone.transform.localScale = new Vector3(farVisionCone.transform.localScale.x * 2, farVisionCone.transform.localScale.y, farVisionCone.transform.localScale.z);
+        nearVisionCone.transform.localScale = new Vector3(nearVisionCone.transform.localScale.x * 2, nearVisionCone.transform.localScale.y, nearVisionCone.transform.localScale.z);
+        peripherealLeftVisionCone.SetActive(true);
+        peripherealRightVisionCone.SetActive(true);
+        // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x * 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
+        //peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x * 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
+    }
 
 }

@@ -57,7 +57,10 @@ public class Script_NearVisionCone : AIStates
             direccion = (other.transform.position - RayCastSpawn.position).normalized;
             if (!Physics.Raycast(RayCastSpawn.position, direccion, out RaycastHit hit, 100, obstacleMask))
             {
-                AI.ChangeState(States.Chasing);
+                if (AI.actualState != States.Stunned && AI.actualState != States.Attacking)
+                {
+                    AI.ChangeState(States.Chasing);
+                }
             }
         }
     }
