@@ -31,6 +31,7 @@ public class AIEnemy : AIStates
     private bool chasing;
     private bool isStunned;
     public bool isSeeking;
+    public bool isAttacking;
 
     //Wandering
     [Header("Wandering")]
@@ -41,6 +42,13 @@ public class AIEnemy : AIStates
     // Seeking
     [Header("Seeking")]
     public Vector3 seekPos;
+
+    // Vision Cone
+    [Header("Vision Cone")]
+    [SerializeField] GameObject farVisionCone;
+    [SerializeField] GameObject nearVisionCone;
+    [SerializeField] GameObject peripherealLeftVisionCone;
+    [SerializeField] GameObject peripherealRightVisionCone;
 
     private void Awake()
     {
@@ -59,6 +67,7 @@ public class AIEnemy : AIStates
         chasing = false;
         isStunned = false;
         StartCoroutine(ChangeIdleWanderingState(3));
+
     }
 
     private void Update()
@@ -69,15 +78,17 @@ public class AIEnemy : AIStates
                 chasing = false;
                 isSeeking = false;
                 AI.isStopped = true;
+                isAttacking = false;
+                isStunned=false;
             break;
             case States.Wandering:
                 chasing = false;
                 isSeeking = false;
                 AI.isStopped = false;
+                isAttacking = false;
+                isStunned=false;
                 if (!moving)
                 {
-                    //    float randX = Random.Range(navMeshCenter.x - navMeshHalfSize.x, navMeshCenter.x + navMeshHalfSize.x);
-                    //    float randZ = Random.Range(navMeshCenter.z - navMeshHalfSize.z, navMeshCenter.z + navMeshHalfSize.z);
                     float randX = Random.Range(frontLeftAreaTransform.position.x, backRightAreaTransform.position.x);
                     float randZ = Random.Range(frontLeftAreaTransform.position.z, backRightAreaTransform.position.z);
                     Vector3 localPoint = new Vector3(randX, navMeshCenter.y, randZ);
@@ -98,6 +109,8 @@ public class AIEnemy : AIStates
                 AI.isStopped = false;
                 chasing = false;
                 isSeeking = true;
+                isAttacking=false;
+                isStunned=false;
                 AI.SetDestination(seekPos);
                 if(transform.position.x == seekPos.x && transform.position.z == seekPos.z)
                 {
@@ -110,6 +123,8 @@ public class AIEnemy : AIStates
                 AI.isStopped = false;
                 chasing = true;
                 isSeeking = false;
+                isAttacking = false;
+                isStunned = false;
                 AI.SetDestination(target.position);
             break;
 
@@ -119,6 +134,15 @@ public class AIEnemy : AIStates
                 isSeeking = false;
                 moving = false;
                 isStunned = true;
+                isAttacking=false;
+            break;
+            case States.Attacking:
+                AI.isStopped = true;
+                chasing=false;
+                isSeeking = false;
+                moving=false;
+                isStunned=false;
+                isAttacking=true;
             break;
         }
     }
@@ -126,7 +150,7 @@ public class AIEnemy : AIStates
     IEnumerator ChangeIdleWanderingState(float timer)
     {
         yield return new WaitForSeconds(timer);
-        if(!chasing && !isStunned && !isSeeking)
+        if(!chasing && !isStunned && !isSeeking && !isAttacking)
         {
             int newState = Random.Range(1, 3);
             if (newState == 1)
@@ -147,4 +171,47 @@ public class AIEnemy : AIStates
         yield return new WaitForSeconds(timer);
         moving = false;
     }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Attack(collision);
+    }
+
+    private void Attack(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            ChangeState(States.Attacking);
+            collision.gameObject.GetComponent<HealthScript>().Hurt();
+            StartCoroutine(endAttack(2));
+        }
+    }
+
+    IEnumerator endAttack(float timeToEnd)
+    {
+        yield return new WaitForSeconds(timeToEnd);
+        ChangeState(States.Idle);
+    }    
+
+    public void reduceVision()
+    {
+        farVisionCone.transform.localScale = new Vector3(farVisionCone.transform.localScale.x / 2, farVisionCone.transform.localScale.y, farVisionCone.transform.localScale.z);
+        nearVisionCone.transform.localScale = new Vector3(nearVisionCone.transform.localScale.x / 2, nearVisionCone.transform.localScale.y, nearVisionCone.transform.localScale.z);
+        peripherealLeftVisionCone.SetActive(false);
+        peripherealRightVisionCone.SetActive(false);
+        // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x / 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
+        // peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x / 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
+    }
+
+    public void incrementVision()
+    {
+        farVisionCone.transform.localScale = new Vector3(farVisionCone.transform.localScale.x * 2, farVisionCone.transform.localScale.y, farVisionCone.transform.localScale.z);
+        nearVisionCone.transform.localScale = new Vector3(nearVisionCone.transform.localScale.x * 2, nearVisionCone.transform.localScale.y, nearVisionCone.transform.localScale.z);
+        peripherealLeftVisionCone.SetActive(true);
+        peripherealRightVisionCone.SetActive(true);
+        // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x * 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
+        //peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x * 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
+    }
+
 }
