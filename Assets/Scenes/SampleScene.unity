@@ -1465,7 +1465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actualState: 0
-  speed: 5
+  speed: 3
   target: {fileID: 235431201}
   navMesh: {fileID: 446185805}
   sampleRadius: 10
