@@ -7,7 +7,8 @@ public class LightScript : NoiseController
 {
     private Light pointLight;
 
-    private float startIntensity;
+    [Header("Intensidad Inicial")]
+    [SerializeField] private float startIntensity;
 
     private bool isOn;
 
@@ -21,12 +22,6 @@ public class LightScript : NoiseController
     private void Awake()
     {
         pointLight = GetComponent<Light>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        startIntensity = pointLight.intensity;
     }
 
     // Update is called once per frame

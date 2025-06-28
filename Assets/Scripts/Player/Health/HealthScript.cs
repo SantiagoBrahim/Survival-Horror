@@ -14,28 +14,60 @@ public class HealthScript : MonoBehaviour
 
     public bool isHurt;
 
+    [Header("Cruz")]
+    [SerializeField] private CruzScript cruzScript;
+
     // Start is called before the first frame update
     void Start()
     {
         volume = GameObject.FindFirstObjectByType<Volume>();
     }
 
-    public void Hurt()
+    public void Hurt(GameObject attacker)
     {
-        if(!isHurt)
+        if(!cruzScript.cruzGameObject.activeSelf)
         {
-            isHurt = true;
-            if (volume.profile.TryGet(out vignette))
+            if (!isHurt)
             {
-                vignette.color.Override(Color.red);
+                isHurt = true;
+                if (volume.profile.TryGet(out vignette))
+                {
+                    vignette.color.Override(Color.red);
+                }
+                StartCoroutine(timerToHeal(5));
             }
-            StartCoroutine(timerToHeal(5));
+            else
+            {
+                // game over
+                StopAllCoroutines();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        else if (cruzScript.cruzGameObject.activeSelf && cruzScript.inCooldown)
+        {
+            if (!isHurt)
+            {
+                isHurt = true;
+                if (volume.profile.TryGet(out vignette))
+                {
+                    vignette.color.Override(Color.red);
+                }
+                StartCoroutine(timerToHeal(5));
+            }
+            else
+            {
+                // game over
+                StopAllCoroutines();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
         else
         {
-            // game over
-            StopAllCoroutines();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            cruzScript.diositoSalvadorAmen();
+            if (attacker.GetComponent<AIEnemy>())
+            {
+                attacker.GetComponent<AIEnemy>().stun(gameObject.transform);
+            }
         }
     }
 

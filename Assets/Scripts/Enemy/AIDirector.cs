@@ -34,12 +34,15 @@ public class AIDirector : MonoBehaviour
     {
         if (isMovingToPlayer)
         {
-            float distanceToPlayer = Vector3.Distance(gameObject.transform.position, playerTransform.position);
-            Debug.Log(distanceToPlayer);
-            if(distanceToPlayer < 10)
+            if (EnemyAI.actualState != AIStates.States.Stunned)
             {
-                EnemyAI.ChangeState(AIStates.States.Wandering);
-                isMovingToPlayer = false;
+                float distanceToPlayer = Vector3.Distance(gameObject.transform.position, playerTransform.position);
+                Debug.Log(distanceToPlayer);
+                if (distanceToPlayer < 10)
+                {
+                    EnemyAI.ChangeState(AIStates.States.Wandering);
+                    isMovingToPlayer = false;
+                }
             }
         }
     }
@@ -47,10 +50,13 @@ public class AIDirector : MonoBehaviour
     IEnumerator SeekPlayer(float timer)
     {
         yield return new WaitForSeconds(timer);
-        isMovingToPlayer = true;
-        EnemyAI.ChangeState(AIStates.States.Seeking);
-        EnemyAI.seekPos = playerTransform.position;
-        timer = Random.Range(20, 60);
+        if (EnemyAI.actualState != AIStates.States.Stunned)
+        {
+            isMovingToPlayer = true;
+            EnemyAI.ChangeState(AIStates.States.Seeking);
+            EnemyAI.seekPos = playerTransform.position;
+            timer = Random.Range(20, 60);
+        }
         StartCoroutine(SeekPlayer(timer));
     }
 }

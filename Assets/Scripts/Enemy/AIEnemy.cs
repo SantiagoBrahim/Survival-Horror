@@ -28,10 +28,6 @@ public class AIEnemy : AIStates
 
     // IA
     private bool moving;
-    private bool chasing;
-    private bool isStunned;
-    public bool isSeeking;
-    public bool isAttacking;
 
     //Wandering
     [Header("Wandering")]
@@ -50,6 +46,9 @@ public class AIEnemy : AIStates
     [SerializeField] GameObject peripherealLeftVisionCone;
     [SerializeField] GameObject peripherealRightVisionCone;
 
+    // Ataque
+    private bool inCooldownAttack;
+
     private void Awake()
     {
         AI = GetComponent<NavMeshAgent>();
@@ -64,8 +63,6 @@ public class AIEnemy : AIStates
         navMeshHalfSize = navMeshSize * 0.5f;
         surfaceTransform = navMesh.transform;
         moving = false;
-        chasing = false;
-        isStunned = false;
         StartCoroutine(ChangeIdleWanderingState(3));
 
     }
@@ -75,18 +72,10 @@ public class AIEnemy : AIStates
         switch(actualState)
         {
             case States.Idle:
-                chasing = false;
-                isSeeking = false;
                 AI.isStopped = true;
-                isAttacking = false;
-                isStunned=false;
             break;
             case States.Wandering:
-                chasing = false;
-                isSeeking = false;
                 AI.isStopped = false;
-                isAttacking = false;
-                isStunned=false;
                 if (!moving)
                 {
                     float randX = Random.Range(frontLeftAreaTransform.position.x, backRightAreaTransform.position.x);
@@ -107,42 +96,23 @@ public class AIEnemy : AIStates
             break;
             case States.Seeking:
                 AI.isStopped = false;
-                chasing = false;
-                isSeeking = true;
-                isAttacking=false;
-                isStunned=false;
                 AI.SetDestination(seekPos);
                 if(transform.position.x == seekPos.x && transform.position.z == seekPos.z)
                 {
-                    isSeeking = false;
                     ChangeState(States.Wandering);
                     seekPos = Vector3.zero;
                 }
             break;
             case States.Chasing:
                 AI.isStopped = false;
-                chasing = true;
-                isSeeking = false;
-                isAttacking = false;
-                isStunned = false;
                 AI.SetDestination(target.position);
             break;
 
             case States.Stunned:
                 AI.isStopped = true;
-                chasing = false;
-                isSeeking = false;
-                moving = false;
-                isStunned = true;
-                isAttacking=false;
             break;
             case States.Attacking:
                 AI.isStopped = true;
-                chasing=false;
-                isSeeking = false;
-                moving=false;
-                isStunned=false;
-                isAttacking=true;
             break;
         }
     }
@@ -150,7 +120,7 @@ public class AIEnemy : AIStates
     IEnumerator ChangeIdleWanderingState(float timer)
     {
         yield return new WaitForSeconds(timer);
-        if(!chasing && !isStunned && !isSeeking && !isAttacking)
+        if(actualState != States.Chasing && actualState != States.Stunned && actualState != States.Seeking && actualState != States.Attacking)
         {
             int newState = Random.Range(1, 3);
             if (newState == 1)
@@ -162,8 +132,7 @@ public class AIEnemy : AIStates
                 ChangeState(States.Wandering);
             }
         }
-        Debug.Log(actualState);
-        StartCoroutine(ChangeIdleWanderingState(timer));
+        StartCoroutine(ChangeIdleWanderingState(Random.Range(1,4)));
     }
 
     IEnumerator ChangeWanderingTargetPosition(float timer)
@@ -175,7 +144,10 @@ public class AIEnemy : AIStates
 
     private void OnCollisionEnter(Collision collision)
     {
-        Attack(collision);
+        if (actualState != States.Stunned && !inCooldownAttack)
+        {
+            Attack(collision);
+        }
     }
 
     private void Attack(Collision collision)
@@ -183,7 +155,8 @@ public class AIEnemy : AIStates
         if (collision.gameObject.CompareTag("Player"))
         {
             ChangeState(States.Attacking);
-            collision.gameObject.GetComponent<HealthScript>().Hurt();
+            collision.gameObject.GetComponent<HealthScript>().Hurt(gameObject);
+            inCooldownAttack = true;
             StartCoroutine(endAttack(2));
         }
     }
@@ -191,7 +164,11 @@ public class AIEnemy : AIStates
     IEnumerator endAttack(float timeToEnd)
     {
         yield return new WaitForSeconds(timeToEnd);
-        ChangeState(States.Idle);
+        if(actualState != States.Stunned)
+        {
+            ChangeState(States.Idle);
+        }
+        inCooldownAttack = false;
     }    
 
     public void reduceVision()
@@ -212,6 +189,21 @@ public class AIEnemy : AIStates
         peripherealRightVisionCone.SetActive(true);
         // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x * 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
         //peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x * 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
+    }
+
+    public void stun(Transform lastPlayerPos)
+    {
+        ChangeState(States.Stunned);
+        StopAllCoroutines();
+        StartCoroutine(stopStun(8, lastPlayerPos));
+    }
+
+    IEnumerator stopStun(float time, Transform lastPlayerPos)
+    {
+        yield return new WaitForSeconds(time);
+        ChangeState(States.Seeking);
+        seekPos = lastPlayerPos.position;
+        StartCoroutine(ChangeIdleWanderingState(Random.Range(1, 4)));
     }
 
 }

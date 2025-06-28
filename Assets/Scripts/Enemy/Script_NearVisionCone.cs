@@ -22,7 +22,11 @@ public class Script_NearVisionCone : AIStates
             direccion = (other.transform.position - RayCastSpawn.position).normalized;
             if (!Physics.Raycast(RayCastSpawn.position, direccion, out RaycastHit hit, 100, obstacleMask))
             {
-                AI.ChangeState(States.Chasing);
+                if (AI.actualState != States.Stunned)
+                {
+                    AI.ChangeState(States.Chasing);
+                    Debug.Log("CHASING 1");
+                }
             }
         }
     }
@@ -43,8 +47,12 @@ public class Script_NearVisionCone : AIStates
             direccion = (other.transform.position - RayCastSpawn.position).normalized;
             if (!Physics.Raycast(RayCastSpawn.position, direccion, out RaycastHit hit, 100, obstacleMask))
             {
-                AI.ChangeState(States.Seeking);
-                AI.seekPos = other.transform.position;
+                if (AI.actualState != States.Stunned)
+                {
+                    AI.ChangeState(States.Seeking);
+                    AI.seekPos = other.transform.position;
+                    Debug.Log("SEEKING");
+                }
             }
         }
     }
@@ -60,6 +68,7 @@ public class Script_NearVisionCone : AIStates
                 if (AI.actualState != States.Stunned && AI.actualState != States.Attacking)
                 {
                     AI.ChangeState(States.Chasing);
+                    Debug.Log("CHASING 1");
                 }
             }
         }
