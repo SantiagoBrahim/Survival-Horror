@@ -19,9 +19,17 @@ public class LightScript : NoiseController
     [SerializeField] private float radiusNoise;
     [SerializeField] private AudioClip turnOnSound;
 
+    [Header("Inventario")]
+    [SerializeField] private InventoryScript inventoryScript;
+
     private void Awake()
     {
         pointLight = GetComponent<Light>();
+    }
+
+    private void Start()
+    {
+        inventoryScript.startLightIntensity = startIntensity;
     }
 
     // Update is called once per frame
@@ -34,6 +42,8 @@ public class LightScript : NoiseController
         {
             pointLight.intensity -= minusQuantity * Time.deltaTime;
         }
+
+        inventoryScript.lightIntensity = pointLight.intensity;
     }
 
     public void ToggleLight(InputAction.CallbackContext callback)

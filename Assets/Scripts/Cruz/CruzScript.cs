@@ -9,13 +9,14 @@ public class CruzScript : MonoBehaviour
 
     [Header("Cruz en cooldown")]
     public bool inCooldown;
+    public float timeInCooldown;
+    public float startCooldown;
 
     [Header("Post procesado")]
     public Volume postProcessVolume;
     private Bloom bloom;
 
     private float targetBloomIntensity;
-    private float targetBloomThreshold;
 
     private float targetExposure;
 
@@ -37,7 +38,6 @@ public class CruzScript : MonoBehaviour
         colorAdjustments.postExposure.overrideState = true;
 
         targetBloomIntensity = 3;
-        targetBloomThreshold = 1f;
         targetExposure = 0;
     }
 
@@ -45,14 +45,12 @@ public class CruzScript : MonoBehaviour
     void Update()
     {
         bloom.intensity.value = Mathf.Lerp(bloom.intensity.value, targetBloomIntensity, Time.deltaTime * 5);
-        bloom.threshold.value = Mathf.Lerp(bloom.intensity.value, targetBloomThreshold, Time.deltaTime * 5);
         colorAdjustments.postExposure.value = Mathf.Lerp(colorAdjustments.postExposure.value, targetExposure, Time.deltaTime * 5);
     }
 
     public void diositoSalvadorAmen()
     {
         targetBloomIntensity = 20;
-        targetBloomThreshold = 0;
         targetExposure = 20;
         inCooldown = true;
         cruzGameObject.GetComponent<MeshRenderer>().material = deactiveMaterial;
@@ -63,14 +61,18 @@ public class CruzScript : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         targetBloomIntensity = 3;
-        targetBloomThreshold = 1;
         targetExposure = 0;
-        StartCoroutine(Cooldown(10));
+        StartCoroutine(Cooldown(startCooldown));
     }
 
     IEnumerator Cooldown(float cooldown)
     {
-        yield return new WaitForSeconds(cooldown);
+        timeInCooldown = 0;
+        while(timeInCooldown < cooldown)
+        {
+            yield return new WaitForSeconds(0.1f);
+            timeInCooldown += 0.1f;
+        }
         inCooldown = false;
         cruzGameObject.GetComponent<MeshRenderer>().material = activeMaterial;
     }
