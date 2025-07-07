@@ -1,17 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
 public class DoorScript : MonoBehaviour
 {
     public bool isLocked;
 
-    public float openAgle = 90f;
-    public float speed = 2f;
     private bool isOpen = false;
-    private Quaternion closedRotation;
-    private Quaternion openRotation;
 
     public GameObject bisagraGameObject;
 
@@ -19,32 +16,32 @@ public class DoorScript : MonoBehaviour
     public float maxUnlockAttemp = 10;
 
     public Image progressBar;
+    public Material unlockMat;
+    public Material lockMat;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        closedRotation = bisagraGameObject.transform.rotation;
-        openRotation = Quaternion.Euler(bisagraGameObject.transform.eulerAngles + new Vector3(0f, openAgle, 0f));
-    }
+    [SerializeField] private PointLight pointLight;
 
-    // Update is called once per frame
-    void Update()
+    [Header("Animaciones")]
+    [SerializeField] private Motion openAnimation;
+    [SerializeField] private Motion knockAnimation;
+    private Animator anim;
+
+    private BoxCollider boxCollider;
+
+    private void Awake()
     {
-        if (isOpen)
-        {
-            bisagraGameObject.transform.rotation = Quaternion.Slerp(bisagraGameObject.transform.rotation, openRotation, Time.deltaTime * speed);
-        }
-        else
-        {
-            bisagraGameObject.transform.rotation = Quaternion.Slerp(bisagraGameObject.transform.rotation, closedRotation, Time.deltaTime * speed);
-        }
+        anim = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     public void toggleDoor()
     {
         if(!isLocked)
         {
-            isOpen = !isOpen;
+            //isOpen = !isOpen;
+
+            anim.Play(openAnimation.name);
+            boxCollider.isTrigger = true;
             // sonido
         }
         else
@@ -59,10 +56,13 @@ public class DoorScript : MonoBehaviour
         unlockAttemp++;
         progressBar.fillAmount = unlockAttemp / maxUnlockAttemp;
         // sonido
+        anim.Play(knockAnimation.name);
+
         if(unlockAttemp >= maxUnlockAttemp)
         {
             isLocked = false;
-            progressBar.color = Color.green;
+            progressBar.material = unlockMat;
+            pointLight.color = LinearColor.Convert(Color.green, 1);
             toggleDoor();
             StartCoroutine(hideUI());
         }
