@@ -5,9 +5,9 @@ using UnityEngine;
 public class NoiseController : MonoBehaviour
 {
     [Header("Audio")]
-    [SerializeField] private AudioSource audioSource;
+    public AudioSource audioController;
 
-    public void MakeNoise(float radiusNoise, AudioClip playedSound, Vector3 playPosition)
+    public void MakeNoise(float radiusNoise, Vector3 playPosition)
     {
         Collider[] collisions = Physics.OverlapSphere(playPosition, radiusNoise);
 
@@ -26,5 +26,27 @@ public class NoiseController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void PlaySFX(AudioClip sound)
+    {
+        StopSFX();
+        audioController.clip = sound;
+        audioController.loop = false;
+        audioController.PlayOneShot(sound);
+    }
+
+    public void StopSFX()
+    {
+        audioController.clip = null;
+        audioController.loop = false;
+        audioController.Stop();
+    }
+
+    public void PlaySFXLoop(AudioClip sound)
+    {
+        audioController.loop = true;
+        audioController.clip = sound;
+        audioController.Play();
     }
 }

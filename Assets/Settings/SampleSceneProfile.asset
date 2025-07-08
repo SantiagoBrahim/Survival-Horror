@@ -280,7 +280,7 @@ MonoBehaviour:
     dimension: 1
   dirtIntensity:
     m_OverrideState: 0
-    m_Value: 0
+    m_Value: 15.44
 --- !u!114 &-7011558710299706105
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf1aba9553839d41ae37dd52e9ebcce, type: 3}
   m_Name: MotionBlur
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 0
     m_Value: 0
@@ -545,7 +545,7 @@ MonoBehaviour:
     m_Value: {x: 1, y: 1, z: 1, w: -0.12021038}
   gain:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.5334336}
+    m_Value: {x: 1, y: 1, z: 1, w: -0.13378106}
 --- !u!114 &7387940361236120451
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -564,7 +564,7 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.424
   response:
     m_OverrideState: 1
     m_Value: 0.8

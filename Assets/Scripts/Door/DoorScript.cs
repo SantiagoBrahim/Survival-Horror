@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
-public class DoorScript : MonoBehaviour
+public class DoorScript : NoiseController
 {
     public bool isLocked;
-
-    private bool isOpen = false;
 
     public GameObject bisagraGameObject;
 
@@ -26,6 +24,10 @@ public class DoorScript : MonoBehaviour
     [SerializeField] private Motion knockAnimation;
     private Animator anim;
 
+    [Header("Sonidos")]
+    [SerializeField] private float radiusNoise;
+    [SerializeField] private AudioClip openDoorSound;
+    [SerializeField] private AudioClip knockDoorSound;
     private BoxCollider boxCollider;
 
     private void Awake()
@@ -36,17 +38,19 @@ public class DoorScript : MonoBehaviour
 
     public void toggleDoor()
     {
-        if(!isLocked)
+        if(!audioController.isPlaying)
         {
-            //isOpen = !isOpen;
-
-            anim.Play(openAnimation.name);
-            boxCollider.isTrigger = true;
-            // sonido
-        }
-        else
-        {
-            unlock();
+            if (!isLocked)
+            {
+                anim.Play(openAnimation.name);
+                boxCollider.isTrigger = true;
+                PlaySFX(openDoorSound);
+                MakeNoise(radiusNoise / 1.5f, audioController.gameObject.transform.position);
+            }
+            else
+            {
+                unlock();
+            }
         }
     }
 
@@ -55,7 +59,8 @@ public class DoorScript : MonoBehaviour
         progressBar.gameObject.SetActive(true);
         unlockAttemp++;
         progressBar.fillAmount = unlockAttemp / maxUnlockAttemp;
-        // sonido
+        PlaySFX(knockDoorSound);
+        MakeNoise(radiusNoise, audioController.gameObject.transform.position);
         anim.Play(knockAnimation.name);
 
         if(unlockAttemp >= maxUnlockAttemp)
@@ -72,5 +77,13 @@ public class DoorScript : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         progressBar.gameObject.SetActive(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(audioController.gameObject.transform.position, radiusNoise);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(audioController.gameObject.transform.position, radiusNoise / 1.5f);
     }
 }

@@ -18,9 +18,15 @@ public class LightScript : NoiseController
     [Header("Sonido")]
     [SerializeField] private float radiusNoise;
     [SerializeField] private AudioClip turnOnSound;
+    [SerializeField] private AudioClip lightLoopSound;
+    [SerializeField] private AudioClip turnOffSound;
+    private float initialVolume;
 
     [Header("Inventario")]
     [SerializeField] private InventoryScript inventoryScript;
+
+    [Header("Light Game Object")]
+    [SerializeField] private GameObject lightGO;
 
     private void Awake()
     {
@@ -30,6 +36,7 @@ public class LightScript : NoiseController
     private void Start()
     {
         inventoryScript.startLightIntensity = startIntensity;
+        initialVolume = audioController.volume;
     }
 
     // Update is called once per frame
@@ -42,20 +49,34 @@ public class LightScript : NoiseController
         {
             pointLight.intensity -= minusQuantity * Time.deltaTime;
         }
+        else if(pointLight.intensity == 0 && audioController.clip == lightLoopSound)
+        {
+            StopSFX();
+        }
 
         inventoryScript.lightIntensity = pointLight.intensity;
+
+        if(isOn)
+        {
+            audioController.volume = (pointLight.intensity * initialVolume) / startIntensity;
+        }
+        else
+        {
+            audioController.volume = initialVolume;
+        }
     }
 
     public void ToggleLight(InputAction.CallbackContext callback)
     {
-        if(callback.performed && isOn)
+        if(callback.performed && isOn && lightGO.activeSelf)
         {
             pointLight.intensity = 0;
+            PlaySFX(turnOffSound);
+            StopAllCoroutines();
         }
-        else if(callback.performed && !isOn)
+        else if(callback.performed && !isOn && lightGO.activeSelf)
         {
-            MakeNoise(radiusNoise, turnOnSound, transform.position);
-            pointLight.intensity = startIntensity;
+            turnOn();
         }
     }
 
@@ -63,5 +84,20 @@ public class LightScript : NoiseController
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, radiusNoise);
+    }
+
+    IEnumerator startLoopAudio()
+    {
+        yield return new WaitForSeconds(turnOnSound.length);
+        PlaySFXLoop(lightLoopSound);
+    }
+
+    public void turnOn()
+    {
+        MakeNoise(radiusNoise, transform.position);
+        PlaySFX(turnOnSound);
+        pointLight.intensity = startIntensity;
+        StopAllCoroutines();
+        StartCoroutine(startLoopAudio());
     }
 }
