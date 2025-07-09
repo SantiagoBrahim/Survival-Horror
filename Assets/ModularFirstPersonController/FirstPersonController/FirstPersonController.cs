@@ -131,6 +131,12 @@ public class FirstPersonController : MonoBehaviour
 
     #endregion
 
+    #region Sounds
+
+    private PlayerAudioController playerAudio;
+
+    #endregion
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -147,6 +153,8 @@ public class FirstPersonController : MonoBehaviour
             sprintRemaining = sprintDuration;
             sprintCooldownReset = sprintCooldown;
         }
+
+        playerAudio = GetComponent<PlayerAudioController>();
     }
 
     void Start()
@@ -276,7 +284,21 @@ public class FirstPersonController : MonoBehaviour
 
         if(enableSprint)
         {
-            if(isSprinting)
+            if (!playerAudio.audioController.isPlaying && isSprinting)
+            {
+                playerAudio.PlaySFXLoop(playerAudio.runStepsSound);
+                playerAudio.MakeNoise(playerAudio.radiusNoise, gameObject.transform.position);
+            }
+            else if(playerAudio.audioController.isPlaying && playerAudio.audioController.clip == playerAudio.walkStepsSound && isSprinting)
+            {
+                playerAudio.PlaySFXLoop(playerAudio.runStepsSound);
+                playerAudio.MakeNoise(playerAudio.radiusNoise, gameObject.transform.position);
+            }
+            else if (playerAudio.audioController.isPlaying && playerAudio.audioController.clip == playerAudio.runStepsSound && !isSprinting)
+            {
+                playerAudio.StopSFX();
+            }
+            if (isSprinting)
             {
                 isZoomed = false;
                 playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, sprintFOV, sprintFOVStepTime * Time.deltaTime);
@@ -289,6 +311,8 @@ public class FirstPersonController : MonoBehaviour
                     {
                         isSprinting = false;
                         isSprintCooldown = true;
+                        playerAudio.PlaySFX(playerAudio.fastBreathSound);
+                        playerAudio.MakeNoise(playerAudio.radiusNoise * 1.1f, gameObject.transform.position);
                     }
                 }
             }
@@ -370,6 +394,20 @@ public class FirstPersonController : MonoBehaviour
 
         if (playerCanMove)
         {
+
+            if (!playerAudio.audioController.isPlaying && isWalking && !isSprinting)
+            {
+                playerAudio.PlaySFXLoop(playerAudio.walkStepsSound);
+                if(!isCrouched)
+                {
+                    playerAudio.MakeNoise(playerAudio.radiusNoise / 1.5f, gameObject.transform.position);
+                }
+            }
+            else if (playerAudio.audioController.isPlaying && playerAudio.audioController.clip == playerAudio.walkStepsSound && !isWalking)
+            {
+                playerAudio.StopSFX();
+            }
+
             // Calculate how fast we should be moving
             Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
@@ -385,7 +423,7 @@ public class FirstPersonController : MonoBehaviour
             }
 
             // All movement calculations shile sprint is active
-            if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
+            if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown && !isCrouched)
             {
                 targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
 
@@ -485,6 +523,7 @@ public class FirstPersonController : MonoBehaviour
         // Brings walkSpeed back up to original speed
         if(isCrouched)
         {
+            playerAudio.audioController.volume *= 2f;
             transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
             walkSpeed /= speedReduction;
 
@@ -500,6 +539,7 @@ public class FirstPersonController : MonoBehaviour
         // Reduces walkSpeed
         else
         {
+            playerAudio.audioController.volume /= 2f;
             transform.localScale = new Vector3(originalScale.x, crouchHeight, originalScale.z);
             walkSpeed *= speedReduction;
 
@@ -518,7 +558,7 @@ public class FirstPersonController : MonoBehaviour
         if(isWalking)
         {
             // Calculates HeadBob speed during sprint
-            if(isSprinting)
+            if (isSprinting)
             {
                 timer += Time.deltaTime * (bobSpeed + sprintSpeed);
             }

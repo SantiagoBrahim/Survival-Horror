@@ -43,9 +43,9 @@ public class DoorScript : NoiseController
             if (!isLocked)
             {
                 anim.Play(openAnimation.name);
-                boxCollider.isTrigger = true;
+                Destroy(boxCollider);
                 PlaySFX(openDoorSound);
-                MakeNoise(radiusNoise / 1.5f, audioController.gameObject.transform.position);
+                MakeNoise(radiusNoise, audioController.gameObject.transform.position);
             }
             else
             {
@@ -58,17 +58,16 @@ public class DoorScript : NoiseController
     {
         progressBar.gameObject.SetActive(true);
         unlockAttemp++;
-        progressBar.fillAmount = unlockAttemp / maxUnlockAttemp;
+        progressBar.fillAmount = unlockAttemp / (maxUnlockAttemp - 1);
         PlaySFX(knockDoorSound);
-        MakeNoise(radiusNoise, audioController.gameObject.transform.position);
+        MakeNoise(radiusNoise / 1.5f, audioController.gameObject.transform.position);
         anim.Play(knockAnimation.name);
 
-        if(unlockAttemp >= maxUnlockAttemp)
+        if(unlockAttemp >= maxUnlockAttemp - 1)
         {
             isLocked = false;
             progressBar.material = unlockMat;
             pointLight.color = LinearColor.Convert(Color.green, 1);
-            toggleDoor();
             StartCoroutine(hideUI());
         }
     }

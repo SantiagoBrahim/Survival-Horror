@@ -71,6 +71,10 @@ public class InventoryScript : MonoBehaviour
             {
                 objects[0].GetComponentInChildren<LightScript>().turnOn();
             }
+            else
+            {
+                objects[0].GetComponentInChildren<LightScript>().turnOff();
+            }
         }
     }
 
@@ -78,6 +82,10 @@ public class InventoryScript : MonoBehaviour
     {
         if (callback.performed)
         {
+            if (objects[0].gameObject.activeSelf)
+            {
+                objects[0].GetComponentInChildren<LightScript>().turnOff();
+            }
             objects[0].gameObject.SetActive(false);
             objects[1].gameObject.SetActive(!objects[1].activeSelf);
         }

@@ -12,7 +12,6 @@ public class AIDirector : MonoBehaviour
     private AIEnemy EnemyAI;
     private Transform playerTransform;
 
-    float timer;
 
     private bool isMovingToPlayer;
 
@@ -24,9 +23,8 @@ public class AIDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timer = Random.Range(20, 60);
         playerTransform = GameObject.FindWithTag("Player").transform;
-        StartCoroutine(SeekPlayer(timer));
+        StartCoroutine(SeekLoop());
     }
 
     // Update is called once per frame
@@ -46,17 +44,21 @@ public class AIDirector : MonoBehaviour
             }
         }
     }
-    
-    IEnumerator SeekPlayer(float timer)
+
+    IEnumerator SeekLoop()
     {
-        yield return new WaitForSeconds(timer);
-        if (EnemyAI.actualState != AIStates.States.Stunned)
+        while (true)
         {
-            isMovingToPlayer = true;
-            EnemyAI.ChangeState(AIStates.States.Seeking);
-            EnemyAI.seekPos = playerTransform.position;
-            timer = Random.Range(20, 60);
+            yield return new WaitForSeconds(Random.Range(20, 60));
+
+            if (EnemyAI.actualState != AIStates.States.Stunned &&
+                EnemyAI.actualState != AIStates.States.Chasing &&
+                EnemyAI.actualState != AIStates.States.Attacking)
+            {
+                isMovingToPlayer = true;
+                EnemyAI.ChangeState(AIStates.States.Seeking);
+                EnemyAI.seekPos = playerTransform.position;
+            }
         }
-        StartCoroutine(SeekPlayer(timer));
     }
 }

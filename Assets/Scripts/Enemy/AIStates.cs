@@ -14,6 +14,9 @@ public class AIStates : MonoBehaviour
 
     public void ChangeState(States newState)
     {
+        if (actualState == States.Stunned || actualState == States.Attacking)
+            return;
+
         actualState = newState;
     }
 }

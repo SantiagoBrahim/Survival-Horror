@@ -45,9 +45,18 @@ public class AIEnemy : AIStates
     [SerializeField] GameObject nearVisionCone;
     [SerializeField] GameObject peripherealLeftVisionCone;
     [SerializeField] GameObject peripherealRightVisionCone;
+    private Vector3 originalFarVisionScale;
+    private Vector3 originalNearVisionScale;
 
     // Ataque
     private bool inCooldownAttack;
+
+
+    private Coroutine idleWanderCoroutine;
+
+    private Coroutine wanderingCoroutine;
+
+
 
     private void Awake()
     {
@@ -56,6 +65,8 @@ public class AIEnemy : AIStates
 
     private void Start()
     {
+        originalFarVisionScale = farVisionCone.transform.localScale;
+        originalNearVisionScale = nearVisionCone.transform.localScale;
         ChangeState(States.Idle);
         AI.speed = speed;
         navMeshSize = navMesh.size;
@@ -78,8 +89,12 @@ public class AIEnemy : AIStates
                 AI.isStopped = false;
                 if (!moving)
                 {
-                    float randX = Random.Range(frontLeftAreaTransform.position.x, backRightAreaTransform.position.x);
-                    float randZ = Random.Range(frontLeftAreaTransform.position.z, backRightAreaTransform.position.z);
+                    float randX = Random.Range(Mathf.Min(frontLeftAreaTransform.position.x, backRightAreaTransform.position.x),
+                                               Mathf.Max(frontLeftAreaTransform.position.x, backRightAreaTransform.position.x));
+
+                    float randZ = Random.Range(Mathf.Min(frontLeftAreaTransform.position.z, backRightAreaTransform.position.z),
+                                               Mathf.Max(frontLeftAreaTransform.position.z, backRightAreaTransform.position.z));
+
                     Vector3 localPoint = new Vector3(randX, navMeshCenter.y, randZ);
 
                     Vector3 worldPoint = surfaceTransform.TransformPoint(localPoint);
@@ -88,8 +103,8 @@ public class AIEnemy : AIStates
                     {
                         AI.SetDestination(hit.position);
                         moving = true;
-                        StopCoroutine("ChangeWanderingTargetPosition");
-                        StartCoroutine(ChangeWanderingTargetPosition(Random.Range(1, 4)));
+                        if (wanderingCoroutine != null) StopCoroutine(wanderingCoroutine);
+                        wanderingCoroutine = StartCoroutine(ChangeWanderingTargetPosition());
                         return;
                     }
                 }
@@ -97,7 +112,8 @@ public class AIEnemy : AIStates
             case States.Seeking:
                 AI.isStopped = false;
                 AI.SetDestination(seekPos);
-                if(transform.position.x == seekPos.x && transform.position.z == seekPos.z)
+                Debug.Log(Vector3.Distance(transform.position, seekPos));
+                if(Vector3.Distance(transform.position, seekPos) < 5f)
                 {
                     ChangeState(States.Wandering);
                     seekPos = Vector3.zero;
@@ -123,39 +139,40 @@ public class AIEnemy : AIStates
         if(actualState != States.Chasing && actualState != States.Stunned && actualState != States.Seeking && actualState != States.Attacking)
         {
             int newState = Random.Range(1, 3);
-            if (newState == 1)
-            {
-                ChangeState(States.Idle);
-            }
-            else
-            {
-                ChangeState(States.Wandering);
-            }
+            ChangeState(newState == 1 ? States.Idle : States.Wandering);
+            idleWanderCoroutine = StartCoroutine(ChangeIdleWanderingState(Random.Range(1, 4)));
         }
-        StartCoroutine(ChangeIdleWanderingState(Random.Range(1,4)));
     }
 
-    IEnumerator ChangeWanderingTargetPosition(float timer)
+    private void StopIdleWanderRoutine()
     {
-        yield return new WaitForSeconds(timer);
+        if (idleWanderCoroutine != null)
+        {
+            StopCoroutine(idleWanderCoroutine);
+            idleWanderCoroutine = null;
+        }
+    }
+
+    IEnumerator ChangeWanderingTargetPosition()
+    {
+        yield return new WaitForSeconds(Random.Range(1, 4));
         moving = false;
     }
-
 
     private void OnCollisionEnter(Collision collision)
     {
         if (actualState != States.Stunned && !inCooldownAttack)
         {
-            Attack(collision);
+            Attack(collision.gameObject);
         }
     }
 
-    private void Attack(Collision collision)
+    private void Attack(GameObject collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
             ChangeState(States.Attacking);
-            collision.gameObject.GetComponent<HealthScript>().Hurt(gameObject);
+            collision.GetComponent<HealthScript>().Hurt(gameObject);
             inCooldownAttack = true;
             StartCoroutine(endAttack(2));
         }
@@ -166,44 +183,39 @@ public class AIEnemy : AIStates
         yield return new WaitForSeconds(timeToEnd);
         if(actualState != States.Stunned)
         {
-            ChangeState(States.Idle);
+            actualState = States.Wandering;
         }
         inCooldownAttack = false;
     }    
 
     public void reduceVision()
     {
-        farVisionCone.transform.localScale = new Vector3(farVisionCone.transform.localScale.x / 2, farVisionCone.transform.localScale.y, farVisionCone.transform.localScale.z);
-        nearVisionCone.transform.localScale = new Vector3(nearVisionCone.transform.localScale.x / 2, nearVisionCone.transform.localScale.y, nearVisionCone.transform.localScale.z);
+        farVisionCone.transform.localScale = originalFarVisionScale / 2;
+        nearVisionCone.transform.localScale = originalNearVisionScale / 2;
         peripherealLeftVisionCone.SetActive(false);
         peripherealRightVisionCone.SetActive(false);
-        // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x / 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
-        // peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x / 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
     }
 
     public void incrementVision()
     {
-        farVisionCone.transform.localScale = new Vector3(farVisionCone.transform.localScale.x * 2, farVisionCone.transform.localScale.y, farVisionCone.transform.localScale.z);
-        nearVisionCone.transform.localScale = new Vector3(nearVisionCone.transform.localScale.x * 2, nearVisionCone.transform.localScale.y, nearVisionCone.transform.localScale.z);
+        farVisionCone.transform.localScale = originalFarVisionScale;
+        nearVisionCone.transform.localScale = originalNearVisionScale;
         peripherealLeftVisionCone.SetActive(true);
         peripherealRightVisionCone.SetActive(true);
-        // peripherealLeftVisionCone.transform.localScale = new Vector3(peripherealLeftVisionCone.transform.localScale.x * 2, peripherealLeftVisionCone.transform.localScale.y, peripherealLeftVisionCone.transform.localScale.z);
-        //peripherealRightVisionCone.transform.localScale = new Vector3(peripherealRightVisionCone.transform.localScale.x * 2, peripherealRightVisionCone.transform.localScale.y, peripherealRightVisionCone.transform.localScale.z);
     }
 
     public void stun(Transform lastPlayerPos)
     {
         ChangeState(States.Stunned);
         StopAllCoroutines();
-        StartCoroutine(stopStun(8, lastPlayerPos));
+        StartCoroutine(stopStun(10, lastPlayerPos));
     }
 
     IEnumerator stopStun(float time, Transform lastPlayerPos)
     {
         yield return new WaitForSeconds(time);
-        ChangeState(States.Seeking);
+        actualState = States.Seeking;
         seekPos = lastPlayerPos.position;
-        StartCoroutine(ChangeIdleWanderingState(Random.Range(1, 4)));
     }
 
 }

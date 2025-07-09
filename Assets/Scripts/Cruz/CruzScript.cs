@@ -68,12 +68,13 @@ public class CruzScript : MonoBehaviour
     IEnumerator Cooldown(float cooldown)
     {
         timeInCooldown = 0;
-        while(timeInCooldown < cooldown)
+        while (timeInCooldown < cooldown)
         {
-            yield return new WaitForSeconds(0.1f);
-            timeInCooldown += 0.1f;
+            yield return null;
+            timeInCooldown += Time.deltaTime;
         }
         inCooldown = false;
         cruzGameObject.GetComponent<MeshRenderer>().material = activeMaterial;
     }
+
 }

@@ -70,9 +70,7 @@ public class LightScript : NoiseController
     {
         if(callback.performed && isOn && lightGO.activeSelf)
         {
-            pointLight.intensity = 0;
-            PlaySFX(turnOffSound);
-            StopAllCoroutines();
+            turnOff();
         }
         else if(callback.performed && !isOn && lightGO.activeSelf)
         {
@@ -99,5 +97,12 @@ public class LightScript : NoiseController
         pointLight.intensity = startIntensity;
         StopAllCoroutines();
         StartCoroutine(startLoopAudio());
+    }
+
+    public void turnOff()
+    {
+        pointLight.intensity = 0;
+        PlaySFX(turnOffSound);
+        StopAllCoroutines();
     }
 }

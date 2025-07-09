@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 270020528992500376}
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
-  m_LocalPosition: {x: -2.3869, y: 0, z: 0.4399999}
+  m_LocalPosition: {x: -2.3869, y: 0.3, z: 0.4399999}
   m_LocalScale: {x: 2.17, y: 2.2885172, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -100,7 +100,7 @@ Transform:
   m_GameObject: {fileID: 1182567222143447753}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 7.6}
+  m_LocalPosition: {x: 0, y: 0.3, z: 7.6}
   m_LocalScale: {x: 9.447994, y: 7.599894, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -309,7 +309,7 @@ Transform:
   m_GameObject: {fileID: 2746628912493586415}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -342,7 +342,7 @@ Transform:
   m_GameObject: {fileID: 4445581937870930694}
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 2.4069, y: 0, z: 0.44}
+  m_LocalPosition: {x: 2.4069, y: 0.3, z: 0.44}
   m_LocalScale: {x: 2.17, y: 2.2885172, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -415,7 +415,7 @@ Transform:
   m_GameObject: {fileID: 5638387634712042664}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0, z: 4.46}
+  m_LocalPosition: {x: 0, y: 0.3, z: 4.46}
   m_LocalScale: {x: 3.5, y: 4.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -539,6 +539,8 @@ GameObject:
   - component: {fileID: 5681514509112822612}
   - component: {fileID: 7122309003201889179}
   - component: {fileID: 927981516202713062}
+  - component: {fileID: 3227564592921891044}
+  - component: {fileID: 1043747910367104392}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -638,8 +640,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0687668, y: 2.411294, z: 5.229898}
-  m_Center: {x: 0, y: 0.6440058, z: -0.73155856}
+  m_Size: {x: 0.5450355, y: 2.2215168, z: 2.7449162}
+  m_Center: {x: 0.00000628829, y: 0.6051115, z: 0.16303527}
 --- !u!195 &5788517705247060622
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -725,6 +727,121 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f33aeb6eceb5632429ae11630775041d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3227564592921891044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8450388034004425325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e80fd83eb514eb4aa203c528fb34c80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioController: {fileID: 1043747910367104392}
+  sounds:
+  - {fileID: 8300000, guid: 70241f76da68f0d41b0ee35e9e8430e6, type: 3}
+  - {fileID: 8300000, guid: 3f40cfc3c1fca034fb1ed8a5fa95c76a, type: 3}
+  - {fileID: 8300000, guid: 90725cff4eafd1149ba1dca64e4022a7, type: 3}
+  - {fileID: 8300000, guid: e7435dab5ab68d548bc95b4097686f8b, type: 3}
+  - {fileID: 8300000, guid: 08edbabf247f491438f1539c1265313c, type: 3}
+--- !u!82 &1043747910367104392
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8450388034004425325}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.3
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 200
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.036111113
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &4224135435620093663
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -808,6 +925,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 367c04193e2298844824285a5bf4fe7e, type: 2}
+    - target: {fileID: -5673389745324446077, guid: 8ad30e693b99c644c90b4fab301b4bf7,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -5673389745324446077, guid: 8ad30e693b99c644c90b4fab301b4bf7,
         type: 3}
       propertyPath: m_DynamicOccludee
