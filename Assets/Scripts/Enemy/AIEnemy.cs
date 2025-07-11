@@ -61,9 +61,12 @@ public class AIEnemy : AIStates
     [SerializeField] private Animator anim;
     [SerializeField] private Motion attackAnim;
 
+    private EnemyAudioPlayer audioController;
+
     private void Awake()
     {
         AI = GetComponent<NavMeshAgent>();
+        audioController = GetComponent<EnemyAudioPlayer>();
     }
 
     private void Start()
@@ -89,6 +92,25 @@ public class AIEnemy : AIStates
         anim.SetBool("Corriendo", actualState == States.Chasing);
         anim.SetBool("Idle", actualState == States.Idle);
         anim.SetBool("Stuneado", actualState == States.Stunned);
+
+        if((actualState == States.Wandering || actualState == States.Seeking) && !audioController.walkSound.isPlaying)
+        {
+            audioController.PlayFootstepWalkSound();
+        }
+        else if(audioController.walkSound.isPlaying && actualState != States.Wandering && actualState != States.Seeking)
+        {
+            audioController.walkSound.Stop();
+        }
+        
+        if(actualState == States.Chasing && !audioController.runSound.isPlaying)
+        {
+            audioController.PlayFootstepRunSound();
+        }
+
+        if(actualState != States.Chasing)
+        {
+            audioController.runSound.Stop();
+        }
 
         AI.speed = speed;
         if (actualState == States.Chasing)
@@ -202,6 +224,7 @@ public class AIEnemy : AIStates
         {
             actualState = States.Attacking;
             anim.Play("ataque");
+            audioController.PlayAttackAudio();
             collision.GetComponent<HealthScript>().Hurt(gameObject);
             inCooldownAttack = true;
             StartCoroutine(endAttack(1));

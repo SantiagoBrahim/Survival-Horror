@@ -31,6 +31,7 @@ public class HealthScript : MonoBehaviour
                 if (volume.profile.TryGet(out vignette))
                 {
                     vignette.color.Override(Color.red);
+                    vignette.intensity.Override(1);
                 }
                 StartCoroutine(timerToHeal(5));
             }
@@ -49,6 +50,7 @@ public class HealthScript : MonoBehaviour
                 if (volume.profile.TryGet(out vignette))
                 {
                     vignette.color.Override(Color.red);
+                    vignette.intensity.Override(1);
                 }
                 StartCoroutine(timerToHeal(5));
             }
@@ -77,6 +79,7 @@ public class HealthScript : MonoBehaviour
             if (volume.profile.TryGet(out vignette))
             {
                 vignette.color.Override(Color.black);
+                vignette.intensity.Override(0.4f);
             }
         }
     }

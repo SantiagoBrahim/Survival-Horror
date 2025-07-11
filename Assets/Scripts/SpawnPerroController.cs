@@ -12,6 +12,7 @@ public class SpawnPerroController : MonoBehaviour
         GameObject[] spawns = GameObject.FindGameObjectsWithTag("Spawn");
 
         GameObject instance = Instantiate(familiarPrefab);
-        instance.transform.position = spawns[Random.Range(0, spawns.Length)].transform.position;
+        GameObject spawnElegido = spawns[Random.Range(0, spawns.Length)];
+        instance.transform.position = spawnElegido.transform.position;
     }
 }

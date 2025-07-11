@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
@@ -29,11 +30,13 @@ public class DoorScript : NoiseController
     [SerializeField] private AudioClip openDoorSound;
     [SerializeField] private AudioClip knockDoorSound;
     private BoxCollider boxCollider;
+    private NavMeshObstacle navObstacle;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider>();
+        navObstacle = GetComponent<NavMeshObstacle>();
     }
 
     private void Start()
@@ -55,6 +58,7 @@ public class DoorScript : NoiseController
             {
                 anim.Play(openAnimation.name);
                 Destroy(boxCollider);
+                Destroy(navObstacle);
                 PlaySFX(openDoorSound);
                 MakeNoise(radiusNoise, audioController.gameObject.transform.position);
             }
