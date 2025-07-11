@@ -15,6 +15,10 @@ public class Timer : MonoBehaviour
 
     private bool contando = true;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     void Update()
     {
         if (contando && SceneManager.GetActiveScene().name != "WinMenu")
@@ -28,6 +32,10 @@ public class Timer : MonoBehaviour
             textoTiempo.text = string.Format("{0:00}:{1:00},{2:000}", minutos, segundos, milisegundos);
 
             
+        }
+        else if(SceneManager.GetActiveScene().name != "WinMenu")
+        {
+            contando = false;
         }
     }
 
