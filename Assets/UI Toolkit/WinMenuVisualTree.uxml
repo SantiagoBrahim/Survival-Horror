@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/GameOverStyleSheet.uss?fileID=7433441132597879392&amp;guid=a59aab541dce7de4d95e9388e1a288ab&amp;type=3#GameOverStyleSheet" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(32, 32, 32, 0); position: absolute;" />
+    <ui:VisualElement name="WinContainer" style="flex-grow: 1; align-items: center; justify-content: center;">
+        <ui:Label tabindex="-1" text="¡Ganaste!" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Ganaste_Label" class="labels" />
+        <ui:Label tabindex="-1" text="Escapaste en " parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tiempo_Label" class="sublabels" style="font-size: 50px;" />
+        <ui:Label tabindex="-1" text="¡Gracias por jugar nuestra demo!" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DemoGracias_Label" class="sublabels" style="font-size: 35px;" />
+        <ui:Button text="Volver al Menú" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Volver_Button" class="buttons" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -10,6 +10,8 @@ public class Timer : MonoBehaviour
 
     private float tiempoTranscurrido = 0f;
 
+    public string tiempoFormateado;
+
     private bool contando = true;
     void Update()
     {
@@ -22,6 +24,7 @@ public class Timer : MonoBehaviour
             int milisegundos = Mathf.FloorToInt((tiempoTranscurrido * 1000) % 1000);
 
             textoTiempo.text = string.Format("{0:00}:{1:00},{2:000}", minutos, segundos, milisegundos);
+
             
         }
     }
@@ -34,5 +37,15 @@ public class Timer : MonoBehaviour
     public float ObtenerTiempoFinal()
     {
         return tiempoTranscurrido;
+    }
+
+    public string GetFormattedTime()
+
+    {
+
+        int minutos = Mathf.FloorToInt(tiempoTranscurrido / 60F);
+        int segundos = Mathf.FloorToInt(tiempoTranscurrido % 60F);
+        int milisegundos = Mathf.FloorToInt((tiempoTranscurrido * 1000) % 1000);
+        return minutos.ToString("00") + ":" + segundos.ToString("00") + "." + milisegundos.ToString("00"); 
     }
 }
