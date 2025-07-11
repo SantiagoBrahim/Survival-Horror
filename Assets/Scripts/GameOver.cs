@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using Cursor = UnityEngine.Cursor;
 
 public class GameOver : MonoBehaviour
 {
@@ -23,9 +25,16 @@ public class GameOver : MonoBehaviour
         _GoMenu.RegisterCallback<ClickEvent>(onGoMenuClick);
     }
 
+    private void Start()
+    {
+        Cursor.visible = true;           // Hace visible el cursor
+        Cursor.lockState = CursorLockMode.None;  // Desbloquea el cursor
+    }
+
     private void onTryAgainClick (ClickEvent e)
     {
         Debug.Log("Se apretó Jugar de Nuevo");
+        SceneManager.LoadScene("Laberinto");
         
     }
 

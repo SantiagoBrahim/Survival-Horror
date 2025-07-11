@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-
+    
     public Text textoTiempo;
 
     private float tiempoTranscurrido = 0f;
@@ -13,9 +14,10 @@ public class Timer : MonoBehaviour
     public string tiempoFormateado;
 
     private bool contando = true;
+
     void Update()
     {
-        if (contando)
+        if (contando && SceneManager.GetActiveScene().name != "WinMenu")
         {
             tiempoTranscurrido += Time.deltaTime;
 
