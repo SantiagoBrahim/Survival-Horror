@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/GameOverStyleSheet.uss?fileID=7433441132597879392&amp;guid=a59aab541dce7de4d95e9388e1a288ab&amp;type=3#GameOverStyleSheet" />
+    <ui:VisualElement name="MenuContenedor" style="flex-grow: 1; align-items: center; justify-content: center; background-image: none; background-color: rgba(46, 32, 32, 0); -unity-background-image-tint-color: rgb(19, 17, 17);">
+        <ui:Label tabindex="-1" text="Un lugar familiar" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Titulo_Label" class="labels" />
+        <ui:Label tabindex="-1" text="DEMO" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Demo_Label" class="sublabels" />
+        <ui:Button text="jugar" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Jugar_Button" class="buttons" />
+        <ui:Button text="salir" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Salir_Button" class="buttons" />
+    </ui:VisualElement>
+</ui:UXML>

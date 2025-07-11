@@ -36,4 +36,5 @@
     -unity-font: url("project://database/Assets/HallowedGrounds.otf?fileID=12800000&guid=ffc14388502cafe47bb7e306feef953e&type=3#HallowedGrounds");
     -unity-font-definition: initial;
     color: rgb(255, 255, 255);
+    font-size: 50px;
 }
