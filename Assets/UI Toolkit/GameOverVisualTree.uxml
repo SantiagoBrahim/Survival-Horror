@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/GameOverStyleSheet.uss?fileID=7433441132597879392&amp;guid=a59aab541dce7de4d95e9388e1a288ab&amp;type=3#GameOverStyleSheet" />
+    <ui:VisualElement name="GameOverContenedor" style="flex-grow: 1; align-self: auto; flex-direction: column; justify-content: center; border-left-color: rgba(254, 0, 0, 0); border-right-color: rgba(254, 0, 0, 0); border-top-color: rgba(254, 0, 0, 0); border-bottom-color: rgba(254, 0, 0, 0); border-top-width: 20px; border-right-width: 20px; border-bottom-width: 20px; border-left-width: 20px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; align-items: center; background-image: url(&quot;project://database/Assets/fondoGameOver.jpg?fileID=2800000&amp;guid=532c13d3d49dbf64c848de59fd010a0f&amp;type=3#fondoGameOver&quot;);">
+        <ui:Label tabindex="-1" text="Has muerto" parse-escape-sequences="true" display-tooltip-when-elided="true" name="GameOverLabel" class="labels" />
+        <ui:Button text="Jugar de nuevo" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TryAgainButton" class="buttons" />
+        <ui:Button text="Volver al Menú" parse-escape-sequences="true" display-tooltip-when-elided="true" name="GoMenuButton" class="GameOverButtons buttons" />
+    </ui:VisualElement>
+</ui:UXML>

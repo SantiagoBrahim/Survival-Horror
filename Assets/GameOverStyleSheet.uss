@@ -1,0 +1,33 @@
+.buttons {
+    color: rgb(129, 128, 129);
+    -unity-text-align: upper-center;
+    width: 300px;
+    height: 75px;
+    font-size: 40px;
+    border-left-color: rgba(87, 10, 20, 0);
+    border-right-color: rgba(87, 10, 20, 0);
+    border-top-color: rgba(87, 10, 20, 0);
+    border-bottom-color: rgba(87, 10, 20, 0);
+    border-top-width: 10px;
+    border-right-width: 10px;
+    border-bottom-width: 10px;
+    border-left-width: 10px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    -unity-background-image-tint-color: rgb(162, 56, 56);
+    background-image: none;
+    background-color: rgb(38, 9, 9);
+    -unity-font: url("project://database/Assets/HallowedGrounds.otf?fileID=12800000&guid=ffc14388502cafe47bb7e306feef953e&type=3#HallowedGrounds");
+    -unity-font-definition: initial;
+}
+
+.labels {
+    -unity-text-align: upper-center;
+    font-size: 120px;
+    color: rgb(87, 10, 20);
+    -unity-font: url("project://database/Assets/HallowedGrounds.otf?fileID=12800000&guid=ffc14388502cafe47bb7e306feef953e&type=3#HallowedGrounds");
+    -unity-font-definition: initial;
+    -unity-font-style: normal;
+}

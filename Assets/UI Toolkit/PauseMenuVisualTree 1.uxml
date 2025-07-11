@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/PauseMenuStyleSheet.uss?fileID=7433441132597879392&amp;guid=49d828788f799cb4d80da8cd11ea23f3&amp;type=3#PauseMenuStyleSheet" />
+    <ui:VisualElement name="Fondo" style="flex-grow: 1; position: absolute;" />
+    <ui:VisualElement name="PauseMenuContenedor" tabindex="1" style="flex-grow: 1; flex-wrap: nowrap; justify-content: center; align-items: center; align-self: center;">
+        <ui:Label tabindex="-1" text="En Pausa" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EnPausa_Label" class="label" />
+        <ui:Button text="Reanudar" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Reanudar_Button" class="button" />
+        <ui:Button text="Volver a Inicio" parse-escape-sequences="true" display-tooltip-when-elided="true" name="VolverInicio_Button" class="button" />
+    </ui:VisualElement>
+</ui:UXML>
