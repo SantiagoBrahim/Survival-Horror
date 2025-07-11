@@ -11,6 +11,7 @@ public class AIEnemy : AIStates
     // Velocidad
     [Header("Velocidad")]
     public float speed;
+    private float startSpeed;
 
     // Objetivo
     [Header("Objetivo")]
@@ -57,6 +58,9 @@ public class AIEnemy : AIStates
     private Coroutine wanderingCoroutine;
 
 
+    [Header("Animaciones")]
+    [SerializeField] private Animator anim;
+    [SerializeField] private Motion attackAnim;
 
     private void Awake()
     {
@@ -68,19 +72,35 @@ public class AIEnemy : AIStates
         originalFarVisionScale = farVisionCone.transform.localScale;
         originalNearVisionScale = nearVisionCone.transform.localScale;
         ChangeState(States.Idle);
-        AI.speed = speed;
+
         navMeshSize = navMesh.size;
         navMeshCenter = navMesh.center;
         navMeshHalfSize = navMeshSize * 0.5f;
         surfaceTransform = navMesh.transform;
         moving = false;
         StartCoroutine(ChangeIdleWanderingState(3));
-
+        startSpeed = speed;
     }
 
     private void Update()
     {
-        switch(actualState)
+        anim.SetBool("Caminando", actualState == States.Wandering || actualState == States.Wandering);
+        anim.SetBool("Corriendo", actualState == States.Chasing);
+        anim.SetBool("Idle", actualState == States.Idle);
+        anim.SetBool("Stuneado", actualState == States.Stunned);
+
+        AI.speed = speed;
+        if (actualState == States.Chasing)
+        {
+            speed = startSpeed * 2;
+        }
+        else
+        {
+            speed = startSpeed;
+        }
+
+
+        switch (actualState)
         {
             case States.Idle:
                 AI.isStopped = true;
@@ -167,14 +187,23 @@ public class AIEnemy : AIStates
         }
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        if (actualState != States.Stunned && !inCooldownAttack)
+        {
+            Attack(collision.gameObject);
+        }
+    }
+
     private void Attack(GameObject collision)
     {
         if (collision.CompareTag("Player"))
         {
-            ChangeState(States.Attacking);
+            actualState = States.Attacking;
+            anim.Play("ataque");
             collision.GetComponent<HealthScript>().Hurt(gameObject);
             inCooldownAttack = true;
-            StartCoroutine(endAttack(2));
+            StartCoroutine(endAttack(1));
         }
     }
 
@@ -206,7 +235,7 @@ public class AIEnemy : AIStates
 
     public void stun(Transform lastPlayerPos)
     {
-        ChangeState(States.Stunned);
+        actualState = States.Stunned;
         StopAllCoroutines();
         StartCoroutine(stopStun(10, lastPlayerPos));
     }

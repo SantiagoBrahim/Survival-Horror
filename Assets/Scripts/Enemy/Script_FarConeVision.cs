@@ -32,6 +32,12 @@ public class Script_FarConeVision : AIStates
             TryDetectPlayer(other.transform);
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (AI.actualState != States.Stunned && AI.actualState != States.Chasing && other.CompareTag("Player"))
+            TryDetectPlayer(other.transform);
+    }
+
     private void TryDetectPlayer(Transform playerTransform)
     {
         direccion = (playerTransform.position - RayCastSpawn.position).normalized;
