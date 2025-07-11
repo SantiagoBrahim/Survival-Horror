@@ -23,7 +23,6 @@ public class AIEnemy : AIStates
     [SerializeField] private float sampleRadius = 1f;
     private Vector3 navMeshSize;
     private Vector3 navMeshCenter;
-    private Vector3 navMeshHalfSize;
     private Transform surfaceTransform;
     private NavMeshAgent AI;
 
@@ -62,9 +61,12 @@ public class AIEnemy : AIStates
     [SerializeField] private Animator anim;
     [SerializeField] private Motion attackAnim;
 
+    private EnemyAudioPlayer audioController;
+
     private void Awake()
     {
         AI = GetComponent<NavMeshAgent>();
+        audioController = GetComponent<EnemyAudioPlayer>();
     }
 
     private void Start()
@@ -73,9 +75,10 @@ public class AIEnemy : AIStates
         originalNearVisionScale = nearVisionCone.transform.localScale;
         ChangeState(States.Idle);
 
+        navMesh = GameObject.Find("NavMeshController").GetComponent<NavMeshSurface>();
+        target = GameObject.FindWithTag("Player").transform;
         navMeshSize = navMesh.size;
         navMeshCenter = navMesh.center;
-        navMeshHalfSize = navMeshSize * 0.5f;
         surfaceTransform = navMesh.transform;
         moving = false;
         StartCoroutine(ChangeIdleWanderingState(3));
@@ -84,10 +87,30 @@ public class AIEnemy : AIStates
 
     private void Update()
     {
+
         anim.SetBool("Caminando", actualState == States.Wandering || actualState == States.Wandering);
         anim.SetBool("Corriendo", actualState == States.Chasing);
         anim.SetBool("Idle", actualState == States.Idle);
         anim.SetBool("Stuneado", actualState == States.Stunned);
+
+        if((actualState == States.Wandering || actualState == States.Seeking) && !audioController.walkSound.isPlaying)
+        {
+            audioController.PlayFootstepWalkSound();
+        }
+        else if(audioController.walkSound.isPlaying && actualState != States.Wandering && actualState != States.Seeking)
+        {
+            audioController.walkSound.Stop();
+        }
+        
+        if(actualState == States.Chasing && !audioController.runSound.isPlaying)
+        {
+            audioController.PlayFootstepRunSound();
+        }
+
+        if(actualState != States.Chasing)
+        {
+            audioController.runSound.Stop();
+        }
 
         AI.speed = speed;
         if (actualState == States.Chasing)
@@ -201,6 +224,7 @@ public class AIEnemy : AIStates
         {
             actualState = States.Attacking;
             anim.Play("ataque");
+            audioController.PlayAttackAudio();
             collision.GetComponent<HealthScript>().Hurt(gameObject);
             inCooldownAttack = true;
             StartCoroutine(endAttack(1));

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class CruzScript : MonoBehaviour
+public class CruzScript : NoiseController
 {
 
     [Header("Cruz en cooldown")]
@@ -29,6 +29,10 @@ public class CruzScript : MonoBehaviour
     [Header("GameObject")]
     public GameObject cruzGameObject;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip flashSound;
+    [SerializeField] private AudioClip cruzCargadaLoop;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +54,7 @@ public class CruzScript : MonoBehaviour
 
     public void diositoSalvadorAmen()
     {
+        PlaySFX(flashSound);
         targetBloomIntensity = 20;
         targetExposure = 20;
         inCooldown = true;
@@ -74,6 +79,7 @@ public class CruzScript : MonoBehaviour
             timeInCooldown += Time.deltaTime;
         }
         inCooldown = false;
+        PlaySFXLoop(cruzCargadaLoop);
         cruzGameObject.GetComponent<MeshRenderer>().material = activeMaterial;
     }
 
