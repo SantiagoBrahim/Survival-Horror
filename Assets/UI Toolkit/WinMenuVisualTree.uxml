@@ -3,7 +3,7 @@
     <ui:VisualElement style="flex-grow: 1; background-color: rgba(32, 32, 32, 0); position: absolute;" />
     <ui:VisualElement name="WinContainer" style="flex-grow: 1; align-items: center; justify-content: center;">
         <ui:Label tabindex="-1" text="¡Ganaste!" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Ganaste_Label" class="labels" />
-        <ui:Label tabindex="-1" text="Escapaste en " parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tiempo_Label" class="sublabels" style="font-size: 50px;" />
+        <ui:Label tabindex="-1" text="Escapaste del familiar" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tiempo_Label" class="sublabels" style="font-size: 50px;" />
         <ui:Label tabindex="-1" text="¡Gracias por jugar nuestra demo!" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DemoGracias_Label" class="sublabels" style="font-size: 35px;" />
         <ui:Button text="Volver al Menú" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Volver_Button" class="buttons" />
     </ui:VisualElement>

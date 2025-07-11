@@ -39,7 +39,7 @@ public class HealthScript : MonoBehaviour
             {
                 // game over
                 StopAllCoroutines();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene("Gameover");
             }
         }
         else if (cruzScript.cruzGameObject.activeSelf && cruzScript.inCooldown)
@@ -58,7 +58,7 @@ public class HealthScript : MonoBehaviour
             {
                 // game over
                 StopAllCoroutines();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene("Gameover");
             }
         }
         else
