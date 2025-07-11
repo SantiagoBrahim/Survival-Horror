@@ -36,6 +36,17 @@ public class DoorScript : NoiseController
         boxCollider = GetComponent<BoxCollider>();
     }
 
+    private void Start()
+    {
+        if(Random.Range(0, 2) == 0)
+        {
+            isLocked = false;
+        }
+        else
+        {
+            isLocked = true;
+        }
+    }
     public void toggleDoor()
     {
         if(!audioController.isPlaying)

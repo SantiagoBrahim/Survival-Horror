@@ -23,7 +23,6 @@ public class AIEnemy : AIStates
     [SerializeField] private float sampleRadius = 1f;
     private Vector3 navMeshSize;
     private Vector3 navMeshCenter;
-    private Vector3 navMeshHalfSize;
     private Transform surfaceTransform;
     private NavMeshAgent AI;
 
@@ -73,9 +72,10 @@ public class AIEnemy : AIStates
         originalNearVisionScale = nearVisionCone.transform.localScale;
         ChangeState(States.Idle);
 
+        navMesh = GameObject.Find("NavMeshController").GetComponent<NavMeshSurface>();
+        target = GameObject.FindWithTag("Player").transform;
         navMeshSize = navMesh.size;
         navMeshCenter = navMesh.center;
-        navMeshHalfSize = navMeshSize * 0.5f;
         surfaceTransform = navMesh.transform;
         moving = false;
         StartCoroutine(ChangeIdleWanderingState(3));
@@ -84,6 +84,7 @@ public class AIEnemy : AIStates
 
     private void Update()
     {
+
         anim.SetBool("Caminando", actualState == States.Wandering || actualState == States.Wandering);
         anim.SetBool("Corriendo", actualState == States.Chasing);
         anim.SetBool("Idle", actualState == States.Idle);

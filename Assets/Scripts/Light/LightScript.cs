@@ -43,6 +43,9 @@ public class LightScript : NoiseController
     void Update()
     {
         isOn = pointLight.intensity > 0;
+        if (isOn) {
+            MakeNoise(radiusNoise / 1.5f, transform.position);
+        }
         float minusQuantity = (minusPercentagePerSecond / 100) * startIntensity;
 
         if (pointLight.intensity > 0)
